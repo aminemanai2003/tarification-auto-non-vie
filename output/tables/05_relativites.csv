@@ -1,0 +1,45 @@
+Modele,Variable,Relativite,pvalue
+Frequence,VehPowerBand6-7,1.06,3.9e-05
+Frequence,VehPowerBand8-9,1.124,5.4e-08
+Frequence,VehPowerBand10+,1.233,1.8e-20
+Frequence,VehAgeBand1-5,1.109,0.00075
+Frequence,VehAgeBand6-12,1.182,5.6e-08
+Frequence,VehAgeBand13+,0.921,0.012
+Frequence,DrivAgeBand23-26,0.679,4.9e-24
+Frequence,DrivAgeBand27-42,0.693,7.2e-30
+Frequence,DrivAgeBand43-74,0.99,0.77
+Frequence,DrivAgeBand75+,1.02,0.66
+Frequence,BonusMalusBand51-60,1.621,2e-129
+Frequence,BonusMalusBand61-90,2.478,0
+Frequence,BonusMalusBand91+,4.641,0
+Frequence,VehGasRegular,0.839,1.6e-42
+Frequence,AreaB,1.096,0.00072
+Frequence,AreaC,1.113,0.084
+Frequence,AreaD,1.166,0.026
+Frequence,AreaE,1.213,0.017
+Frequence,AreaF,1.141,0.13
+Frequence,DensityBandQ2,1.064,0.28
+Frequence,DensityBandQ3,1.181,0.011
+Frequence,DensityBandQ4,1.249,0.0044
+Cout moyen,VehPowerBand6-7,1.009,0.53
+Cout moyen,VehPowerBand8-9,1.042,0.048
+Cout moyen,VehPowerBand10+,1.077,0.00062
+Cout moyen,VehAgeBand1-5,1.003,0.91
+Cout moyen,VehAgeBand6-12,0.938,0.033
+Cout moyen,VehAgeBand13+,0.885,0.00013
+Cout moyen,DrivAgeBand23-26,0.945,0.13
+Cout moyen,DrivAgeBand27-42,0.951,0.12
+Cout moyen,DrivAgeBand43-74,0.991,0.77
+Cout moyen,DrivAgeBand75+,1.052,0.25
+Cout moyen,BonusMalusBand51-60,1.009,0.62
+Cout moyen,BonusMalusBand61-90,1.072,6.2e-06
+Cout moyen,BonusMalusBand91+,1.116,8.4e-07
+Cout moyen,VehGasRegular,0.988,0.31
+Cout moyen,AreaB,1.012,0.66
+Cout moyen,AreaC,1.002,0.98
+Cout moyen,AreaD,1.037,0.58
+Cout moyen,AreaE,1.071,0.38
+Cout moyen,AreaF,0.945,0.5
+Cout moyen,DensityBandQ2,1.013,0.82
+Cout moyen,DensityBandQ3,1.015,0.81
+Cout moyen,DensityBandQ4,0.989,0.88

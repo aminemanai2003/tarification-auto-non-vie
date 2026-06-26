@@ -1,0 +1,12 @@
+# R
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# objets intermediaires (regeneres par run_all.R)
+output/derived/
+
+# OS
+.DS_Store
+Thumbs.db

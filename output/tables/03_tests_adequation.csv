@@ -1,0 +1,3 @@
+Loi,D_khi2,ddl,seuil_5pct,AIC,Decision
+Poisson,2162,2,5.99,226315,Rejet de H0 (loi non adequate)
+Binomiale Negative,14.4,2,5.99,225014,Rejet de H0 (loi non adequate)
