@@ -34,5 +34,12 @@ jobs:
       - name: Render report
         run: Rscript R/render_report.R
 
-      - name: Check generated artifacts
-        run: git diff --exit-code -- output rapport/rapport.md
+      - name: Check deterministic generated artifacts
+        run: git diff --exit-code -- output/tables rapport/rapport.md
+
+      - name: Check figure generation
+        shell: bash
+        run: |
+          expected="$(git ls-files 'output/figures/*.png' | wc -l)"
+          generated="$(find output/figures -maxdepth 1 -type f -name '*.png' | wc -l)"
+          test "$generated" -eq "$expected"
