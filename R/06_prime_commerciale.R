@@ -49,7 +49,7 @@ kpi <- data.table(
 save_tab(kpi, "06_kpi_techniques")
 print(kpi)
 cat(ifelse(ratio_combine < 1,
-  ">> Ratio combine < 100% : le portefeuille est techniquement rentable.\n",
+  ">> Ratio combine < 100% dans le scenario de chargements retenu.\n",
   ">> Ratio combine > 100% : perte technique, tarif a revoir.\n"))
 
 # --- 3) Exemples de tarifs par profil --------------------------------

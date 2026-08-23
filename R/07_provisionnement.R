@@ -17,7 +17,7 @@ if (!exists("PROJ")) {
 cat("\n========== 07 - PROVISIONNEMENT ==========\n")
 
 # --- Triangle de liquidation (paiements cumules) ---------------------
-data(GenIns)                 # triangle classique (Taylor & Ashe)
+data(GenIns)                 # exemple public distinct du portefeuille freMTPL2
 tri <- GenIns / 1000         # en milliers d'euros
 n <- ncol(tri)
 

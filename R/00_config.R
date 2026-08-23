@@ -11,6 +11,11 @@
 #   - fournit quelques fonctions utilitaires.
 # =====================================================================
 
+options(repos = c(
+  CASdatasets = "https://cas.uqam.ca/pub/",
+  CRAN = "https://cloud.r-project.org"
+))
+
 suppressWarnings(suppressMessages({
   library(CASdatasets)   # donnees freMTPL2 (RC auto France)
   library(data.table)    # manipulation rapide

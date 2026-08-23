@@ -1,11 +1,11 @@
 # =====================================================================
-# 08_reassurance.R  --  Reassurance non proportionnelle + lien Solva 2
+# 08_reassurance.R  --  Reassurance non proportionnelle + proxy de capital
 # ---------------------------------------------------------------------
 # Traite EXCESS-OF-LOSS (XS) : la cedante conserve les sinistres jusqu'a
 # une PRIORITE, le reassureur prend la tranche au-dela (dans la limite
 # de la PORTEE). On mesure :
 #   - la cession (charge cedee / retenue, taux de cession)
-#   - la reduction de volatilite et de la VaR 99,5% (capital Solvabilite 2)
+#   - la reduction de volatilite et d'un proxy VaR 99,5% - moyenne
 # =====================================================================
 
 if (!exists("PROJ")) {
@@ -62,21 +62,21 @@ for (s in 1:S) {
 }
 
 var995 <- function(z) quantile(z, 0.995)
-scr_proxy <- function(z) var995(z) - mean(z)     # capital = VaR99.5 - moyenne
+capital_proxy <- function(z) var995(z) - mean(z)  # VaR99.5 - moyenne
 
 tab_solva <- data.table(
   Mesure = c("Charge moyenne (EUR)", "Ecart-type (EUR)",
-             "VaR 99,5% (EUR)", "Capital SCR proxy (VaR99,5 - moyenne)"),
+             "VaR 99,5% (EUR)", "Proxy de capital (VaR99,5 - moyenne)"),
   Brut = c(round(mean(agg_brut)), round(sd(agg_brut)),
-           round(var995(agg_brut)), round(scr_proxy(agg_brut))),
+           round(var995(agg_brut)), round(capital_proxy(agg_brut))),
   Net_de_reassurance = c(round(mean(agg_net)), round(sd(agg_net)),
-           round(var995(agg_net)), round(scr_proxy(agg_net))))
+           round(var995(agg_net)), round(capital_proxy(agg_net))))
 tab_solva[, Reduction := sprintf("%.1f%%", 100*(1 - Net_de_reassurance/Brut))]
 save_tab(tab_solva, "08_solvabilite")
-cat("\n--- Impact Solvabilite 2 (charge annuelle agregee) ---\n")
+cat("\n--- Impact sur la charge annuelle agregee ---\n")
 print(tab_solva)
-cat(sprintf(">> Le traite XS reduit le capital de solvabilite (SCR proxy) de %.1f%%.\n",
-            100*(1 - scr_proxy(agg_net)/scr_proxy(agg_brut))))
+cat(sprintf(">> Le traite XS reduit le proxy de capital de %.1f%%.\n",
+            100*(1 - capital_proxy(agg_net)/capital_proxy(agg_brut))))
 
 # --- 3) Graphique : effet du traite sur les gros sinistres -----------
 gros <- claims[ClaimAmount >= prio][order(-ClaimAmount)][1:min(.N, 200)]
@@ -106,7 +106,7 @@ g_agg <- ggplot(agg_dt, aes(charge/1e6, fill = type)) +
 save_fig(g_agg, "08_distribution_agregee")
 
 save_rds(list(taux_cession = charge_cedee/charge_brute,
-              reduction_scr = 1 - scr_proxy(agg_net)/scr_proxy(agg_brut)),
+              reduction_capital = 1 - capital_proxy(agg_net)/capital_proxy(agg_brut)),
          "params_reassurance")
 
-cat("[08] OK - reassurance XS analysee (+ lien Solvabilite 2)\n")
+cat("[08] OK - reassurance XS analysee avec un proxy de capital simplifie\n")

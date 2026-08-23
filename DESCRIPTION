@@ -1,0 +1,24 @@
+Package: tarificationAutoNonVie
+Type: Project
+Title: Reproducible Non-Life Motor Insurance Pricing Study
+Version: 0.1.0
+Authors@R: person("Amine", "Manai", role = c("aut", "cre"),
+    email = "amine.manai.tn@gmail.com")
+Description: Reproducible educational analysis of motor insurance frequency,
+    severity and pricing, with separate reserving and reinsurance examples.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends:
+    R (>= 4.5)
+Imports:
+    actuar,
+    CASdatasets,
+    ChainLadder,
+    data.table,
+    dplyr,
+    fitdistrplus,
+    ggplot2,
+    knitr,
+    MASS,
+    rmarkdown,
+    scales

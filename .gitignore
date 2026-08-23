@@ -3,6 +3,8 @@
 .RData
 .Rproj.user/
 *.Rproj
+renv/library/
+renv/staging/
 
 # objets intermediaires (regeneres par run_all.R)
 output/derived/

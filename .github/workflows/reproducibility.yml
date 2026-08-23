@@ -1,0 +1,38 @@
+name: R reproducibility
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
+        with:
+          r-version: renv
+          extra-repositories: https://cas.uqam.ca/pub
+
+      - name: Install dependencies
+        uses: r-lib/actions/setup-r-dependencies@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
+        with:
+          dependencies: '"hard"'
+
+      - name: Run analysis pipeline
+        run: Rscript R/run_all.R
+
+      - name: Render report
+        run: Rscript R/render_report.R
+
+      - name: Check generated artifacts
+        run: git diff --exit-code -- output rapport/rapport.md

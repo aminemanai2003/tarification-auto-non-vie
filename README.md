@@ -1,111 +1,98 @@
-# Tarification d'un portefeuille d'assurance automobile (RC + dommages)
+# Tarification automobile non-vie en R
 
-> **De la donnee a la prime commerciale** — un projet actuariel non-vie complet,
-> en R, sur donnees reelles (RC auto France, ~678 000 polices).
->
-> *Non-life pricing project: full actuarial pipeline from raw data to commercial
-> premium, with reserving and reinsurance — built in R on the French MTPL dataset.*
+[![R](https://img.shields.io/badge/R-4.5-276DC3?logo=r&logoColor=white)](https://www.r-project.org/)
+[![Actuariat](https://img.shields.io/badge/actuariat-non--vie-1F3864)](rapport/rapport.md)
+[![Licence: MIT](https://img.shields.io/badge/licence-MIT-2ea44f.svg)](LICENSE)
 
-![R](https://img.shields.io/badge/R-4.5-276DC3?logo=r&logoColor=white)
-![Domaine](https://img.shields.io/badge/Actuariat-Non%20Vie-1F3864)
-![Donnees](https://img.shields.io/badge/Donnees-freMTPL2-70AD47)
+Projet actuariel reproductible consacré à la tarification automobile. Le cœur de l’étude utilise les jeux de données publics `freMTPL2freq` et `freMTPL2sev` pour construire une approche fréquence–sévérité, analyser les sinistres graves et calculer des primes pures segmentées.
 
----
+Le dépôt contient aussi deux extensions pédagogiques clairement séparées du portefeuille `freMTPL2` :
 
-## Contexte
+- un exemple de provisionnement Chain-Ladder/Mack sur le triangle `GenIns` du package `ChainLadder` ;
+- une simulation simplifiée de réassurance Excess-of-Loss et de réduction d’un proxy de capital fondé sur la VaR à 99,5 %.
 
-Projet personnel d'**actuariat non-vie**. Il reproduit la
-demarche complete d'un actuaire en cellule technique tarification, en
-mobilisant les methodes classiques de la branche :
+> **English summary:** Reproducible R project for French motor insurance pricing using `freMTPL2`, with separate educational examples for claims reserving and excess-of-loss risk-capital simulation.
 
-**Donnees → Frequence → Cout → Prime pure → Prime commerciale → Provisionnement → Reassurance**
+## Périmètre et données
 
-## Donnees
+| Bloc | Données | Rôle dans le projet |
+|---|---|---|
+| Tarification | `freMTPL2freq` — 677 991 polices | Fréquence, segmentation et prime pure |
+| Sévérité | `freMTPL2sev` — 26 444 sinistres | Coût moyen et valeurs extrêmes |
+| Provisionnement | `GenIns` — exemple distinct | Illustration Chain-Ladder et Mack |
+| Réassurance | Simulation à partir des sévérités empiriques | Comparaison de la charge brute et nette |
 
-- `freMTPL2freq` : **677 991 polices** RC automobile (exposition, age,
-  vehicule, bonus-malus, zone…).
-- `freMTPL2sev` : **26 444 sinistres** (montants).
-- Source : package R [`CASdatasets`](http://cas.uqam.ca/).
+Les données sont distribuées par le package R [`CASdatasets`](https://cas.uqam.ca/) et ne sont pas incluses dans le dépôt.
 
-## Competences demontrees
+## Méthodes
 
-| Domaine | Methodes mises en oeuvre |
+- **Fréquence :** Poisson, binomiale négative, surdispersion et test du Khi-deux.
+- **Sévérité :** Gamma, lognormale, diagnostics d’adéquation et analyse de queue par Pareto/Hill.
+- **Tarification :** GLM Poisson avec exposition, GLM Gamma et relativités tarifaires.
+- **Provisionnement illustratif :** Chain-Ladder déterministe et incertitude de Mack.
+- **Réassurance illustrative :** traité Excess-of-Loss, simulation agrégée et proxy `VaR(99,5 %) − moyenne`.
+
+## Résultats reproduits
+
+| Étape | Résultat |
 |---|---|
-| **Modelisation frequence** | Loi de Poisson, Binomiale Negative, estimation moments / max de vraisemblance, **test du Khi-deux**, detection de surdispersion |
-| **Modelisation cout** | Lois Gamma & Lognormale, **test de Kolmogorov-Smirnov**, separation attritionnels / graves |
-| **Valeurs extremes (EVT)** | Loi de Pareto, **estimateur de Hill**, mean-excess plot, QQ-plot |
-| **Tarification** | **GLM** Poisson (frequence) & Gamma (cout), segmentation, relativites, prime pure |
-| **Pilotage technique** | Chargements, prime commerciale, **S/P et ratio combine** |
-| **Provisionnement** | Triangle de liquidation, **Chain-Ladder**, modele de **Mack** |
-| **Reassurance & Solva 2** | Traite **Excess-of-Loss**, simulation de la charge agregee, **VaR 99,5% / SCR** |
+| Fréquence | Surdispersion `V/E = 1,08`; la binomiale négative améliore l’AIC par rapport à Poisson |
+| Queue de sévérité | Estimateur de Hill `α ≈ 1,17`, à interpréter comme un diagnostic sensible au seuil |
+| Prime pure GLM | Écart agrégé inférieur à `0,2 %` par rapport au burning cost, sur les données d’ajustement |
+| Scénario de prime commerciale | Ratio combiné illustratif d’environ `96 %` sous les hypothèses de chargement retenues |
+| Exemple de provisionnement | Coefficient de variation de Mack d’environ `13 %` sur `GenIns` |
+| Simulation XS | Réduction d’environ `25 %` du proxy de capital dans le scénario simulé |
 
-## Resultats cles
+Ces résultats décrivent l’exécution actuelle du projet. Ils ne constituent ni une validation hors échantillon, ni une étude réglementaire Solvabilité II, ni une recommandation de tarification.
 
-| Etape | Resultat |
-|---|---|
-| Frequence | Surdispersion `V/E = 1,08` → Binomiale Negative retenue (AIC 225 014 vs 226 315) |
-| Cout grave | Indice de queue de Pareto (Hill) `α ≈ 1,17` (queue tres epaisse) |
-| Prime pure GLM | Ecart < **0,2 %** vs burning cost (modele non biaise & segmente) |
-| Prime commerciale | **Ratio combine ≈ 96 %** (portefeuille rentable) |
-| Provisionnement | Provision Chain-Ladder, CoV de Mack ≈ **13 %** |
-| Reassurance XS | Cession 16,5 % de la charge, **SCR reduit de ~25 %** |
+![Relativités de fréquence](output/figures/05_relativites_frequence.png)
 
-![Relativites de frequence](output/figures/05_relativites_frequence.png)
-![Charge agregee brute vs nette de reassurance](output/figures/08_distribution_agregee.png)
+![Charge agrégée brute et nette de réassurance](output/figures/08_distribution_agregee.png)
 
-📄 **Rapport complet et commente : [`rapport/rapport.md`](rapport/rapport.md)**
+## Documentation
 
-## Structure du projet
+- [Rapport détaillé](rapport/rapport.md)
+- [Pipeline complet](R/run_all.R)
+- [Tables générées](output/tables)
+- [Figures générées](output/figures)
 
-```
-projet_tarification_auto/
-├── R/
-│   ├── 00_config.R            # packages, chemins, parametres, utilitaires
-│   ├── 01_data_prep.R         # rapprochement & fiabilisation des bases
-│   ├── 02_eda.R               # analyse exploratoire / etudes univariees
-│   ├── 03_frequence.R         # Poisson / Binomiale Negative + Khi-deux
-│   ├── 04_cout.R              # Gamma / Lognormale + KS, Pareto / Hill (EVT)
-│   ├── 05_prime_pure_glm.R    # GLM frequence x cout = prime pure
-│   ├── 06_prime_commerciale.R # chargements, S/P, ratio combine
-│   ├── 07_provisionnement.R   # Chain-Ladder + Mack
-│   ├── 08_reassurance.R       # traite XS + lien Solvabilite 2
-│   └── run_all.R              # execute tout le pipeline
-├── rapport/
-│   ├── rapport.Rmd            # rapport source (R Markdown)
-│   └── rapport.md             # rapport genere (lisible sur GitHub)
-└── output/
-    ├── figures/               # graphiques (.png)
-    └── tables/                # tableaux (.csv)
-```
+## Reproduire l’analyse
 
-## Reproduire l'analyse
-
-Pre-requis : **R ≥ 4.3** et les packages
-`CASdatasets`, `data.table`, `dplyr`, `ggplot2`, `MASS`, `fitdistrplus`,
-`actuar`, `ChainLadder`.
+Prérequis : R 4.5 ou version compatible.
 
 ```r
-# installation de CASdatasets (depuis le depot dedie)
-install.packages("CASdatasets", repos = "http://cas.uqam.ca/pub/", type = "source")
-install.packages(c("data.table","dplyr","ggplot2","MASS",
-                   "fitdistrplus","actuar","ChainLadder"))
+install.packages("renv")
+renv::restore()
 ```
+
+Puis, depuis la racine du dépôt :
 
 ```bash
-# 1) lancer tout le pipeline (genere figures + tables)
 Rscript R/run_all.R
-
-# 2) regenerer le rapport
-Rscript -e "knitr::knit('rapport/rapport.Rmd','rapport/rapport.md')"
+Rscript R/render_report.R
 ```
 
-## Limites et pistes d'amelioration
+Les figures et tables sont régénérées dans `output/`. Le fichier `renv.lock` fixe les versions R et des packages utilisées pour la vérification.
 
-- Modeles **GAM / GBM** pour capturer les non-linearites des facteurs continus.
-- Modele **Tweedie** pour estimer la prime pure en une seule etape.
-- Provisionnement **stochastique** (bootstrap ODP) au-dela de Mack.
-- Theorie de la **credibilite** pour les segments a faible exposition.
+## Structure
 
-## Auteur
+```text
+R/                  scripts numérotés et pipeline complet
+rapport/            rapport source R Markdown et rendu Markdown
+output/figures/     graphiques générés
+output/tables/      résultats tabulaires générés
+```
 
-Projet personnel de portfolio en actuariat non-vie.
+## Limites
+
+- Les performances tarifaires ne sont pas évaluées sur un jeu de test temporel ou externe.
+- Le seuil de sinistres graves et l’estimation de Hill demandent une analyse de sensibilité plus complète.
+- Les chargements commerciaux sont des hypothèses pédagogiques, pas des paramètres observés chez un assureur.
+- `GenIns` n’est pas le triangle de développement du portefeuille `freMTPL2`.
+- Le proxy de capital n’est pas un SCR réglementaire et omet notamment dépendances, primes de réassurance, risque de défaut et diversification.
+
+## Auteur et licence
+
+Projet réalisé par [Amine Manai](https://github.com/aminemanai2003), étudiant en M1 Actuariat à Le Mans Université et en double diplôme avec le cursus d’ingénierie Data Science d’ESPRIT.
+
+Code distribué sous [licence MIT](LICENSE). Les jeux de données restent soumis aux conditions de leurs fournisseurs respectifs.
